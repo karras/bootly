@@ -1,0 +1,41 @@
+---
+- name: Install ejabberd
+  apt:
+    name=ejabberd
+    state=latest
+
+- name: Configure ejabberd
+  template:
+    src=ejabberd.cfg.j2
+    dest=/etc/ejabberd/ejabberd.cfg
+    owner=ejabberd
+    group=ejabberd
+    mode=0644
+
+- name: Copy shell script for cert creation
+  copy:
+    src=files/ejabberd_cert.sh
+    dest=/usr/local/bin/ejabberd_cert.sh
+    owner=root
+    group=root
+    mode=0755
+
+- name: Copy cronjob for cert creation
+  copy:
+    src=files/acmetool_ejabberd
+    dest=/etc/cron.d/acmetool_ejabberd
+    owner=root
+    group=root
+    mode=0644
+
+- name: Ensure ejabberd services are started on bootup
+  service:
+    name=ejabberd
+    enabled=yes
+
+- name: Set admin password
+  command: ejabberdctl register {{ ejabberd_admin }} {{ ejabberd_domain }} {{ ejabberd_pass }} creates=/etc/ejabberd/config.done
+  notify:
+    - Restart ejabberd
+
+- debug: msg="ejabberd installed, use 'https://{{ ejabberd_domain }}:5280/admin' to configure users"

@@ -1,0 +1,5 @@
+---
+apache_ServerAdmin: foo@bar.ch
+apache_SSLCertificateFile: /var/lib/acme/live/example.com/fullchain
+apache_SSLCertificateKeyFile: /var/lib/acme/live/example.com/privkey
+apache_SSLCertificateChainFile: /etc/ssl/certs/lets-encrypt-x1-cross-signed.pem

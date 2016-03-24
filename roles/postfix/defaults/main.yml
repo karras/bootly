@@ -1,0 +1,7 @@
+---
+postfix_domain: "{{ ansible_domain }}"
+postfix_mariadb_pass: ''
+postfix_smtpd_tls_cert_file: /var/lib/acme/live/example.com/fullchain
+postfix_smtpd_tls_key_file: /var/lib/acme/live/example.com/privkey
+postfix_myhostname: "{{ ansible_fqdn }}"
+postfix_mydestination: "{{ ansible_fqdn }}, localhost"

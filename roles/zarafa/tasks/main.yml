@@ -1,0 +1,76 @@
+---
+- name: Add zarafa user to DB
+  mysql_user:
+    name=zarafa
+    host={{ item }}
+    password={{ zarafa_zarafa_pass }}
+    priv=*.*:ALL
+    state=present
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Copy keyring to server
+  copy:
+    src=pubring.gpg
+    dest=/tmp/pubring.gpg
+
+- name: Add gpg key
+  apt_key:
+    file=/tmp/pubring.gpg
+    state=present
+
+- name: Add zarafa repos
+  apt_repository:
+    repo={{ item }}
+    state=present
+  with_items:
+    - "deb http://gritly.0x17.ch:8081/zarafa-webapp/ trusty main"
+    - "deb http://gritly.0x17.ch:8081/zarafa/ trusty main"
+
+#- name: Install zarafa
+#  apt: name=zarafa state=latest
+
+#- name: Install zarafa-webapp
+#  apt: name=zarafa-webapp state=latest
+
+- name: Ensure zarafa services are started on bootup
+  service:
+    name={{ item }}
+    enabled=yes
+  with_items:
+    - zarafa-dagent
+    - zarafa-gateway
+    - zarafa-ical
+    - zarafa-monitor
+    - zarafa-search
+    - zarafa-server
+    - zarafa-spooler
+
+- name: Ensure zarafa-dagent is started on bootup
+  service:
+    name=zarafa-dagent
+    enabled=yes
+
+- name: Create zarafa database
+  mysql_db:
+   db=zarafa
+   state=present
+
+- name: Configuring Zarafa server
+  template:
+    src=server.cfg.j2
+    dest=/etc/zarafa/server.cfg
+    mode=0644
+  notify:
+  - Restart Zarafa server
+
+- name: Configuring Zarafa gateway
+  template:
+    src=gateway.cfg.j2
+    dest=/etc/zarafa/gateway.cfg
+    mode=0644
+  notify:
+  - Restart Zarafa gateway

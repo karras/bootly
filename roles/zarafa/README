@@ -1,0 +1,17 @@
+apt-key adv --keyserver keys.gnupg.net --recv-keys 9E3E53F19C7DE460
+
+vi /etc/apt/sources.list.d/aptly.list
+  deb http://repo.aptly.info/ squeeze main
+
+apt-get update
+apt-get install aptly
+
+aptly repo create -distribution=trusty -component=main zarafa
+aptly repo add zarafa /home/nicolas/zarafa
+aptly snapshot create zarafa-7.2.2.481 from repo zarafa
+aptly publish -architectures="i386,amd64" snapshot zarafa-7.2.2.481 zarafa
+
+aptly repo create -distribution=trusty -component=main zarafa-webapp
+aptly repo add zarafa-webapp /home/nicolas/zarafa_webapp
+aptly snapshot create zarafa-webapp-2.2.0 from repo zarafa-webapp
+aptly publish -architectures="i386,amd64" snapshot zarafa-webapp-2.2.0 zarafa-webapp

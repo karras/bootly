@@ -1,0 +1,42 @@
+---
+# please install python-mysqldb
+- name: Install mariadb
+  apt:
+    name=mariadb-server
+    state=present
+
+- name: Ensure mariadb is started on bootup
+  service:
+    name=mysql
+    enabled=yes
+
+- name: Copy the root credentials as .my.cnf file
+  template:
+    src=my.cnf.j2
+    dest=/root/.my.cnf
+    mode=0600
+  notify:
+    - Restart MariaDB
+
+- name: Remove anonymous user accounts
+  mysql_user:
+    name=''
+    host=localhost
+    state=absent
+
+# rembember kids, user "root" can always login w/o PW
+# https://mariadb.com/kb/en/mariadb/unix_socket-authentication-plugin/
+# add user "admin" to perform operations on the DB
+- name: Update MariaDB root password for all admin accounts
+  mysql_user:
+    name=admin
+    host={{ item }}
+    password={{ mariadb_admin_pass }}
+    priv=*.*:ALL
+    state=present
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+

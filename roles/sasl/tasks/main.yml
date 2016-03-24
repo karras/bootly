@@ -1,0 +1,38 @@
+---
+- name: Install sasls
+  apt:
+    name=sasl2-bin
+    state=latest
+
+- name: Ensure saslauthd is started on bootup
+  service: name=saslauthd enabled=yes
+
+- name: Copy saslauthd to the system
+  template:
+    src=saslauthd.j2
+    dest=/etc/default/saslauthd
+    mode=0600
+
+- name: Copy smtpd.conf to the system
+  template:
+    src=smtpd.conf.j2
+    dest=/etc/postfix/sasl/smtpd.conf
+    mode=0600
+
+- name: Check permissions
+  command: dpkg-statoverride --list
+  register: postfix_statoverride
+
+- debug: msg={{ postfix_statoverride.stdout }}
+
+- name: Fix permissions
+  command: dpkg-statoverride --add root sasl 710 {{ item }}
+  when: postfix_statoverride.stdout.find('{{ item }}') == -1
+  with_items:
+    - /var/spool/postfix/var/run/saslauthd
+
+- name: Add user postfix to group sasl
+  command: adduser postfix sasl
+
+  notify:
+    - Restart Postfix

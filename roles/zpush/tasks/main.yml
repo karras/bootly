@@ -1,0 +1,49 @@
+---
+- name: Download z-push sources
+  get_url:
+    url=http://download.z-push.org/final/{{ zp_major }}.{{ zp_minor }}/z-push-{{ zp_major }}.{{ zp_minor }}.{{ zp_patch }}.tar.gz
+    dest=/tmp/z-push.tar.gz
+#    checksum=sha256:{{ sha256sum }}
+
+- name: Extract sources
+  unarchive:
+    src=/tmp/z-push.tar.gz
+    dest=/var/www/z-push-{{ zp_major }}.{{ zp_minor }}.{{ zp_patch }}/
+    copy=no
+
+- name: Create symlink so we have a static name
+  file:
+    src=/var/www/z-push-{{ zp_major }}.{{ zp_minor }}.{{ zp_patch }}
+    dest=/var/www/z-push
+    state=link
+
+- name: Create log directory
+  file:
+    path=/var/log/z-push
+    state=directory
+    mode=755
+    owner=www-data
+    group=www-data
+
+- name: Create static directory
+  file:
+    path=/var/lib/z-push
+    state=directory
+    mode=755
+    owner=www-data
+    group=www-data
+
+- name: Fix config
+  lineinfile:
+    dest=/var/www/z-push/config.php
+    regexp=USE_FULLEMAIL_FOR_LOGIN
+    line="    define('USE_FULLEMAIL_FOR_LOGIN', true);"
+    state=present
+
+- name: Configuring Apache webserver for z-push
+  template:
+    src=z-push.conf.j2
+    dest=/etc/apache2/sites-enabled/z-push.conf
+    mode=0644
+  notify:
+    - Restart Apache2

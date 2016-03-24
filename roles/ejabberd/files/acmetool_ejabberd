@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+MAILTO=root
+8 1 * * * root /usr/local/bin/ejabberd_cert.sh

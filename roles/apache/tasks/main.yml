@@ -1,0 +1,42 @@
+---
+- name: Install Apache and dependencies
+  apt:
+    name={{ item }}
+    state=latest
+  with_items:
+    - apache2
+    - libapache2-mod-php5
+    - php-soap
+
+- name: Ensure apache is started on bootup
+  service:
+    name=apache2
+    enabled=yes
+
+- name: Enable modules
+  apache2_module:
+    name={{ item }}
+    state=present
+  with_items:
+  - rewrite
+  - headers
+
+- name: Set default VHost config (http->https)
+  template:
+    src=000-default.conf.j2
+    dest=/etc/apache2/sites-available/000-default.conf
+    mode=0644
+  notify:
+  - Restart apache
+
+- name: Set SSL VHost config
+  template:
+    src=default-ssl.conf.j2
+    dest=/etc/apache2/sites-available/default-ssl.conf
+    mode=0644
+
+- name: Copy webpage to the server
+  copy:
+    src=files/index.html
+    dest=/var/www/html/index.html
+    mode=0644

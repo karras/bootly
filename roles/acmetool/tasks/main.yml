@@ -1,0 +1,37 @@
+---
+- name: Add repository
+  apt_repository:
+    repo='ppa:hlandau/rhea'
+    update_cache=yes
+    state=present
+
+- name: Install acmetool
+  apt:
+    name=acmetool
+    state=latest
+
+- name: Make sure, well known poistion exists
+  file:
+    path=/var/www/html/.well-known/acme-challenge
+    owner=root
+    group=root
+    mode=0755
+
+- name: Copy acme config to the system
+  template:
+    src=target.j2
+    dest=/var/lib/acme/conf/target
+    mode=0644
+
+- name: Install cronjob
+  template:
+    src=acmetool.j2
+    dest=/etc/cron.d/acmetool
+    mode=0600
+
+#- name: Request certs
+#  command: acmetool want {{ item }}
+#  args:
+#    creates: creates /var/lib/acme/live/{{ item }}
+#  with_items:
+#    - {{ acmetool_domains }}

@@ -1,0 +1,3 @@
+_jabber._tcp		SRV	20 0 5269 host.domain.tld.
+_xmpp-client._tcp		SRV	20 0 5222 host.domain.tld.
+_xmpp-server._tcp		SRV	20 0 5269 host.domain.tld.

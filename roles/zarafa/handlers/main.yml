@@ -1,0 +1,10 @@
+---
+ - name: Restart Zarafa server
+   service:
+     name=zarafa-server
+     state=restarted
+
+ - name: Restart Zarafa gateway
+   service:
+     name=zarafa-gateway
+     state=restarted

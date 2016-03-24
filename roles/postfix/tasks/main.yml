@@ -1,0 +1,50 @@
+---
+- name: Install postfix
+  apt:
+    name={{ item }}
+    state=latest
+  with_items:
+    - postfix
+    - postfix-mysql
+
+- name: Ensure postfix is started on bootup
+  service:
+    name=postfix
+    enabled=yes
+
+- name: Copy main.cf to the system
+  template:
+    src=main.cf.j2
+    dest=/etc/postfix/main.cf
+    mode=0600
+  notify:
+  - Restart Postfix
+
+- name: Copy master.cf to the system
+  template:
+    src=master.cf.j2
+    dest=/etc/postfix/master.cf
+    mode=0600
+  notify:
+  - Restart Postfix
+
+- name: Copy mysql-users.cf to the system
+  template:
+    src=mysql-users.cf.j2
+    dest=/etc/postfix/mysql-users.cf
+    mode=0600
+  notify:
+  - Restart Postfix
+
+- name: Copy virtual_mailbox_domains.cf to the system
+  template:
+    src=virtual_mailbox_domains.cf.j2
+    dest=/etc/postfix/virtual_mailbox_domains.cf
+    mode=0600
+  notify:
+  - Restart Postfix
+
+- name: Generate virtual mailbox db file (/etc/postfix/virtual_mailbox_domains.cf.db)
+  command: /usr/sbin/postmap /etc/postfix/virtual_mailbox_domains.cf
+  args:
+    creates: /etc/postfix/virtual_mailbox_domains.cf.db

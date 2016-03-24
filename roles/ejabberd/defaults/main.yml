@@ -1,0 +1,7 @@
+---
+ejabberd_admin:  jabberaddmin
+ejabberd_pass:   ''
+ejabberd_domain: "{{ ansible_domain }}"
+ejabberd_cert:   /var/lib/acme/live/example.com/fullchain_privkey.pem
+ejabberd_ip:     0.0.0.0
+ejabberd_host:   xmpp.example.com
