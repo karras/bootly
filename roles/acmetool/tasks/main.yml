@@ -10,12 +10,16 @@
     name=acmetool
     state=latest
 
-- name: Make sure, well known poistion exists
+- name: Create necessary directories
   file:
-    path=/var/www/html/.well-known/acme-challenge
+    path={{ item }}
     owner=root
     group=root
     mode=0755
+    state=directory
+  with_items:
+    - /var/www/html/.well-known/acme-challenge
+    - /var/lib/acme/conf
 
 - name: Copy acme config to the system
   template:
