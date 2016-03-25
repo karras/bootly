@@ -1,0 +1,11 @@
+---
+- hosts: all
+  roles:
+    - { role: acmetool }
+    - { role: apache }
+    - { role: ejabberd }
+    - { role: mariadb }
+    - { role: postfix }
+    - { role: sasl }
+    - { role: zarafa }
+    - { role: zpush }
