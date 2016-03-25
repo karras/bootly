@@ -1,9 +1,11 @@
 ---
-# please install python-mysqldb
 - name: Install mariadb
   apt:
-    name=mariadb-server
+    name={{ item }}
     state=present
+  with_items:
+    - mariadb-server
+    - python-mysqldb
 
 - name: Ensure mariadb is started on bootup
   service:
