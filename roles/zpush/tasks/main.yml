@@ -8,7 +8,7 @@
 - name: Extract sources
   unarchive:
     src=/tmp/z-push.tar.gz
-    dest=/var/www/z-push-{{ zp_major }}.{{ zp_minor }}.{{ zp_patch }}/
+    dest=/var/www/
     copy=no
 
 - name: Create symlink so we have a static name
