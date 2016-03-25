@@ -1,3 +1,5 @@
 ---
  - name: Restart ejabberd
-   service: name=ejabberd state=restarted
+   service:
+     name=ejabberd
+     state=restarted

@@ -5,7 +5,9 @@
     state=latest
 
 - name: Ensure saslauthd is started on bootup
-  service: name=saslauthd enabled=yes
+  service:
+    name=saslauthd
+    enabled=yes
 
 - name: Copy saslauthd to the system
   template:
@@ -33,6 +35,5 @@
 
 - name: Add user postfix to group sasl
   command: adduser postfix sasl
-
   notify:
     - Restart Postfix

@@ -56,8 +56,8 @@
 
 - name: Create zarafa database
   mysql_db:
-   db=zarafa
-   state=present
+    db=zarafa
+    state=present
 
 - name: Configuring Zarafa server
   template:
@@ -65,7 +65,7 @@
     dest=/etc/zarafa/server.cfg
     mode=0644
   notify:
-  - Restart Zarafa server
+    - Restart Zarafa server
 
 - name: Configuring Zarafa gateway
   template:
@@ -73,4 +73,4 @@
     dest=/etc/zarafa/gateway.cfg
     mode=0644
   notify:
-  - Restart Zarafa gateway
+    - Restart Zarafa gateway

@@ -18,7 +18,7 @@
     dest=/etc/postfix/main.cf
     mode=0600
   notify:
-  - Restart Postfix
+    - Restart Postfix
 
 - name: Copy master.cf to the system
   template:
@@ -26,7 +26,7 @@
     dest=/etc/postfix/master.cf
     mode=0600
   notify:
-  - Restart Postfix
+    - Restart Postfix
 
 - name: Copy mysql-users.cf to the system
   template:
@@ -34,7 +34,7 @@
     dest=/etc/postfix/mysql-users.cf
     mode=0600
   notify:
-  - Restart Postfix
+    - Restart Postfix
 
 - name: Copy virtual_mailbox_domains.cf to the system
   template:
@@ -42,7 +42,7 @@
     dest=/etc/postfix/virtual_mailbox_domains.cf
     mode=0600
   notify:
-  - Restart Postfix
+    - Restart Postfix
 
 - name: Generate virtual mailbox db file (/etc/postfix/virtual_mailbox_domains.cf.db)
   command: /usr/sbin/postmap /etc/postfix/virtual_mailbox_domains.cf
